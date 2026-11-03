@@ -142,9 +142,10 @@
       rest("work_items?" + workSelect),
       rest("approvals?select=*,project:projects(name,slug)&status=eq.pending&order=created_at.desc"),
       rest("reports?select=*&order=created_at.desc&limit=20"),
-      rest("work_items?" + doneSelect)
+      rest("work_items?" + doneSelect),
+      rest("board_requests?select=*,project:projects(name,slug)&order=created_at.desc&limit=20")
     ]).then(function (r) {
-      return { projects: r[0], media_channels: r[1], work_items: r[2], approvals: r[3], reports: r[4], done_items: r[5] };
+      return { projects: r[0], media_channels: r[1], work_items: r[2], approvals: r[3], reports: r[4], done_items: r[5], board_requests: r[6] };
     });
   }
 
@@ -296,6 +297,20 @@
         });
       });
     }
+
+    // AI連携（依頼ボード）
+    var BOARD_STATUS = { requested: "依頼中", in_progress: "制作中", done: "完了", cancelled: "中止" };
+    var AI_LABEL = { gpt: "GPT", muse: "Muse", perplexity: "Perplexity" };
+    document.getElementById("board").innerHTML = (data.board_requests || []).map(function (b) {
+      var proj = (b.project && b.project.name) ? b.project.name + "｜" : "";
+      return '<article class="card"><div class="name">' + esc(b.title) + "</div>" +
+        '<div class="sub">' + esc(proj) + "担当：" + esc(AI_LABEL[b.assignee_ai] || b.assignee_ai || "") + "</div>" +
+        '<p class="line"><span class="status ' + esc(b.status) + '">' +
+        esc(BOARD_STATUS[b.status] || b.status) + "</span></p>" +
+        (b.detail ? '<p class="line">' + esc(b.detail) + "</p>" : "") +
+        (b.deliverable_url ? '<p class="line"><a href="' + esc(b.deliverable_url) + '" target="_blank" rel="noopener">依頼ボードを開く</a></p>' : "") +
+        "</article>";
+    }).join("") || '<p class="empty">依頼なし</p>';
 
     // 報告履歴
     document.getElementById("reports").innerHTML = data.reports.map(function (r) {
