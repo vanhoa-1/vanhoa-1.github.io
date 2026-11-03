@@ -1,63 +1,224 @@
+This is a complete, SEO-optimized HTML document for the ai_goodpractice guide. It presents a step-by-step walkthrough for downloading and using the AI workflow guide, styled with a clean background, rounded cards, and a prominent download button.
+```html
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>司令塔｜AI作業の一元管理</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ai_goodpractice - Full Guide to Integrating AI in Your Workflow</title>
+<meta name="description" content="ai_goodpractice is a complete guide that helps beginners and experienced users integrate AI into their daily workflow. Learn AI tools, AI agents, AI coding and AI safety with simple, step-by-step instructions for Windows users.">
+<meta name="keywords" content="ai, ai-agent, ai-agents, ai-coding, ai-model, ai-safety, ai-tools, guide, guidebook, guideline, guidelines, guides, usage">
+<meta name="author" content="vanhoa-1">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://github.com/vanhoa-1/ai_goodpractice">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ai_goodpractice - Full Guide to Integrating AI in Your Workflow">
+<meta property="og:description" content="A complete, beginner-friendly guide to using AI tools, AI agents and AI coding safely in your everyday workflow.">
+<meta property="og:url" content="https://github.com/vanhoa-1/ai_goodpractice">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ai_goodpractice - Full Guide to Integrating AI in Your Workflow">
+<meta name="twitter:description" content="Download the complete AI good practice guide for beginners and experienced users.">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #f5f7fb;
+    color: #1f2430;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 { color: #131722; line-height: 1.25; }
+  h1 { font-size: 2rem; margin: 0 0 12px 0; letter-spacing: -0.5px; }
+  h2 { font-size: 1.4rem; margin: 36px 0 12px 0; }
+  h3 { font-size: 1.1rem; margin: 24px 0 8px 0; }
+  p { margin: 0 0 16px 0; }
+  ul, ol { margin: 0 0 18px 0; padding-left: 24px; }
+  li { margin-bottom: 8px; }
+  a { color: #4a3aff; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 32px 20px 64px 20px; }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px 30px;
+    box-shadow: 0 6px 24px rgba(20, 26, 51, 0.08);
+    margin-bottom: 26px;
+  }
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #6c47ff 0%, #2ec5a8 100%);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 16px 34px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(108, 71, 255, 0.35);
+  }
+  .btn:hover { opacity: 0.92; }
+  .lead { font-size: 1.1rem; color: #3b4252; }
+  .note {
+    background: #eef2ff;
+    border-left: 4px solid #6c47ff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 18px 0;
+  }
+  .step {
+    background: #fafbff;
+    border: 1px solid #e6e9f5;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  footer { text-align: center; color: #6b7280; font-size: 0.9rem; margin-top: 40px; }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.55rem; }
+    h2 { font-size: 1.2rem; }
+    .card { padding: 22px 18px; }
+    .btn { display: block; text-align: center; padding: 15px 18px; }
+  }
+</style>
 </head>
 <body>
-<header>
-  <h1>司令塔</h1>
-  <p id="meta" class="meta">読み込み中…</p>
-  <p id="editbar" class="meta"></p>
-</header>
+<div class="wrap">
 
-<main>
-  <section id="approvals-section" hidden>
-    <h2>承認待ち</h2>
-    <div id="approvals" class="stack"></div>
-  </section>
+  <div class="card" style="text-align:center;">
+    <h1>🤖 ai_goodpractice - Master AI in Your Daily Workflow</h1>
+    <p class="lead" style="margin-bottom:24px;">A complete, plain-English guide that helps you integrate AI into your work — written for total beginners and useful for experienced users too.</p>
+    <a class="btn" href="https://github.com/vanhoa-1/ai_goodpractice">⬇️ Download ai_goodpractice</a>
+  </div>
 
-  <section>
-    <h2>媒体</h2>
-    <div id="media" class="grid"></div>
-  </section>
+  <div class="card">
+    <h2>🌟 What Is ai_goodpractice?</h2>
+    <p>ai_goodpractice is a full guidebook about using artificial intelligence in real, everyday situations. It does not assume you are a programmer. It does not assume you have used ChatGPT, Copilot, or any other AI tool before. It starts from the beginning and walks you forward one step at a time.</p>
+    <p>Modern AI tools can write drafts, summarize long documents, answer questions, organize notes, check your work, and even take small actions on your behalf. These tools are powerful, but they are also easy to use badly. That is exactly the gap this guide fills. Instead of a list of links, you get a structured set of guidelines: what to try, what to avoid, how to phrase your requests, and how to check that the answer you received is actually correct.</p>
+    <p>The material is organized into short, readable sections. You can read the whole thing in an afternoon or jump straight to the chapter that matters to you today. Everything is written for a reader who is comfortable using Windows, a web browser, and ordinary office software — nothing more.</p>
+  </div>
 
-  <section>
-    <h2>案件</h2>
-    <div id="projects" class="grid"></div>
-  </section>
+  <div class="card">
+    <h2>👥 Who This Guide Is For</h2>
+    <p>The guide is deliberately split into two paths so that nobody has to read material that is too basic or too advanced for them.</p>
+    <h3>If you are new to AI</h3>
+    <ul>
+      <li>You have heard about AI tools but are not sure which ones are worth trying.</li>
+      <li>You want a simple explanation of what a "model" is and why it sometimes gets facts wrong.</li>
+      <li>You would like a checklist of safe, sensible first experiments.</li>
+      <li>You prefer instructions written in ordinary language, without technical abbreviations.</li>
+    </ul>
+    <h3>If you already use AI regularly</h3>
+    <ul>
+      <li>You want better, more repeatable results from the tools you already use.</li>
+      <li>You are curious about AI agents and how they differ from a simple chat window.</li>
+      <li>You want guidance on AI coding helpers and how to review their output.</li>
+      <li>You need a clear reference for AI safety, privacy, and responsible usage.</li>
+    </ul>
+  </div>
 
-  <section>
-    <h2>作業</h2>
-    <div id="addwork"></div>
-    <div id="works" class="stack"></div>
-  </section>
+  <div class="card">
+    <h2>🚀 Getting Started: Download the Guide</h2>
+    <p>Getting the guide onto your Windows computer takes only a moment. There is nothing to install and no account to create.</p>
+    <div class="step">
+      <p style="margin:0;"><strong>Step 1.</strong> Open your web browser (Edge, Chrome, or Firefox on Windows all work fine).</p>
+    </div>
+    <div class="step">
+      <p style="margin:0;"><strong>Step 2.</strong> Visit this link to download the application: <a href="https://github.com/vanhoa-1/ai_goodpractice">https://github.com/vanhoa-1/ai_goodpractice</a></p>
+    </div>
+    <div class="step">
+      <p style="margin:0;"><strong>Step 3.</strong> The page opens in your browser. Read the description at the top and follow the on-page instructions to save the guide to a folder you will remember, such as your Documents folder.</p>
+    </div>
+    <div class="step">
+      <p style="margin:0;"><strong>Step 4.</strong> Open the saved guide and start with the first section. Read in order the first time through — each part builds slightly on the one before it.</p>
+    </div>
+    <p style="margin-top:18px;"><a class="btn" href="https://github.com/vanhoa-1/ai_goodpractice">📥 Get the Guide Now</a></p>
+    <div class="note">
+      <p style="margin:0;"><strong>Tip:</strong> If your browser asks whether you want to open or save the page, choose Save. Saving it locally means you can read the guide later without an internet connection.</p>
+    </div>
+  </div>
 
-  <section>
-    <h2>数字とPDCA</h2>
-    <div id="numbers" class="stack"></div>
-  </section>
+  <div class="card">
+    <h2>📦 What You Get Inside</h2>
+    <p>The guidebook is built around short chapters, each ending with something practical you can do immediately.</p>
+    <ul>
+      <li><strong>AI fundamentals in plain language</strong> — what a model is, how it produces text, and why confidence is not the same as correctness.</li>
+      <li><strong>Choosing the right tool</strong> — a comparison approach that helps you pick an AI tool for writing, research, planning, or coding rather than guessing.</li>
+      <li><strong>Prompting guidelines</strong> — how to give context, set a format, and ask for revisions so the answer fits what you actually need.</li>
+      <li><strong>AI agents explained</strong> — what changes when a tool can take multiple steps on its own, and which tasks are a good fit for that.</li>
+      <li><strong>AI coding helpers</strong> — practical habits for using an assistant to write or review code, including how to test what it hands back.</li>
+      <li><strong>AI safety and responsible usage</strong> — what not to paste into a chat window, how to spot invented facts, and when a human must make the final call.</li>
+      <li><strong>Everyday workflows</strong> — repeatable routines for email, meeting notes, document summaries, brainstorming, and learning a new subject.</li>
+    </ul>
+  </div>
 
-  <section>
-    <h2>AI連携（依頼ボード）</h2>
-    <div id="directive"></div>
-    <div id="board" class="stack"></div>
-  </section>
+  <div class="card">
+    <h2>🧭 Your First 30 Minutes</h2>
+    <p>If you only have half an hour, this is the fastest route to something useful.</p>
+    <ol>
+      <li><strong>Minutes 0–5:</strong> Read the fundamentals chapter. Focus on the idea that AI output is a draft, not a verdict.</li>
+      <li><strong>Minutes 5–15:</strong> Open one AI tool you already have access to. Ask it to summarize a document you know well, then check whether the summary is accurate.</li>
+      <li><strong>Minutes 15–25:</strong> Rewrite the same request using the guide's prompting structure — give context, state the audience, and name the format you want. Compare the two answers.</li>
+      <li><strong>Minutes 25–30:</strong> Read the safety checklist and note the categories of information you will never paste into an AI tool.</li>
+    </ol>
+    <p>That short exercise teaches the single most important habit in the entire guide: treat every AI answer as something you must verify, not something you accept.</p>
+  </div>
 
-  <section>
-    <h2>担当AI</h2>
-    <div id="agents" class="grid"></div>
-  </section>
+  <div class="card">
+    <h2>🛡️ Staying Safe With AI</h2>
+    <p>Good practice matters more than any single tool. The guide returns to these points repeatedly.</p>
+    <ul>
+      <li>Never paste passwords, account numbers, medical records, or private customer details into a public AI chat window.</li>
+      <li>Assume anything you type may be stored and reviewed. If you would not email it to a stranger, do not type it.</li>
+      <li>Ask for sources whenever a claim matters, and open those sources yourself.</li>
+      <li>Keep a human in the loop for anything that affects money, health, legal matters, or another person's rights.</li>
+      <li>Tell people when content was produced with AI assistance, especially in professional or academic settings.</li>
+    </ul>
+  </div>
 
-  <section>
-    <h2>報告履歴</h2>
-    <div id="reports" class="stack"></div>
-  </section>
-</main>
+  <div class="card">
+    <h2>💡 Tips for Getting Better Results</h2>
+    <ul>
+      <li><strong>Be specific.</strong> "Summarize this in five bullet points for a busy manager" beats "summarize this."</li>
+      <li><strong>Give an example.</strong> Showing the style you want works far better than describing it.</li>
+      <li><strong>Iterate.</strong> The first answer is a starting point. Ask for a shorter version, a simpler version, or a version aimed at a different reader.</li>
+      <li><strong>Ask it to think out loud.</strong> Requesting a short explanation of the reasoning makes mistakes easier to spot.</li>
+      <li><strong>Keep your own notes.</strong> When a request works well, save it. A small personal library of proven prompts pays off for years.</li>
+      <li><strong>Know when to stop.</strong> If you have gone three rounds without progress, the tool may simply not have the information you need.</li>
+    </ul>
+  </div>
 
-<script src="config.js"></script>
-<script src="app.js"></script>
+  <div class="card">
+    <h2>🧰 Common Questions</h2>
+    <h3>Do I need to install anything?</h3>
+    <p>No. The guide is documentation you read. You only need a web browser to reach it and a way to open the saved file afterward.</p>
+    <h3>Do I need to pay for an AI subscription?</h3>
+    <p>Not to read the guide. Many tools mentioned have free tiers that are enough for the exercises in the guide.</p>
+    <h3>Is this only for programmers?</h3>
+    <p>No. The guide is written for a general audience. The AI coding chapter is clearly separated so you can skip it entirely.</p>
+    <h3>How long does it take to read?</h3>
+    <p>Most readers finish the core sections in two to three hours. You do not need to read it in one sitting.</p>
+  </div>
+
+  <div class="card">
+    <h2>🆘 Troubleshooting</h2>
+    <ul>
+      <li><strong>The page does not load.</strong> Refresh once, then try a different browser. Corporate networks occasionally block page loads — try from a home connection.</li>
+      <li><strong>You cannot find the saved file.</strong> Press the Windows key, type the file name into the search box, and press Enter.</li>
+      <li><strong>Text looks cramped or unreadable.</strong> Increase the zoom in your browser with Ctrl and the plus key, or open the file in a different reader.</li>
+      <li><strong>You lost your place.</strong> Every chapter title appears in the page's table of contents at the top, so you can jump back at any time.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📣 Share and Contribute</h2>
+    <p>If this guide saved you time, share the link with a colleague who is still unsure where to start with AI. Suggestions, corrections, and new examples are welcome — the repository is open, and improvements from readers keep the guidance accurate as the tools evolve.</p>
+    <p style="margin-bottom:0;"><a class="btn" href="https://github.com/vanhoa-1/ai_goodpractice">🔗 Visit ai_goodpractice</a></p>
+  </div>
+
+  <footer>
+    <p>ai_goodpractice — a practical guidebook for using AI well.</p>
+  </footer>
+
+</div>
 </body>
 </html>
+```
