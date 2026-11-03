@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>司令塔｜AI作業の一元管理</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>司令塔</h1>
+  <p id="meta" class="meta">読み込み中…</p>
+</header>
+
+<main>
+  <section id="approvals-section" hidden>
+    <h2>承認待ち</h2>
+    <div id="approvals" class="stack"></div>
+  </section>
+
+  <section>
+    <h2>媒体</h2>
+    <div id="media" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>案件</h2>
+    <div id="projects" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>作業</h2>
+    <div id="works" class="stack"></div>
+  </section>
+
+  <section>
+    <h2>報告履歴</h2>
+    <div id="reports" class="stack"></div>
+  </section>
+</main>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

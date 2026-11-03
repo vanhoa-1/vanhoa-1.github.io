@@ -1,0 +1,92 @@
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --sub: #6e6e73;
+  --line: #e5e5ea;
+  --green: #34c759;
+  --yellow: #ffcc00;
+  --red: #ff3b30;
+  --blue: #0071e3;
+  --gray: #8e8e93;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 20px 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+h1 { font-size: 26px; font-weight: 700; margin: 0; }
+.meta { color: var(--sub); font-size: 13px; margin: 0; }
+.badge {
+  font-size: 11px;
+  color: #fff;
+  background: var(--gray);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+main { max-width: 960px; margin: 0 auto; padding: 8px 20px 48px; }
+section { margin-top: 28px; }
+h2 { font-size: 15px; font-weight: 600; color: var(--sub); margin: 0 0 10px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+}
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.card .name { font-size: 16px; font-weight: 600; }
+.card .sub { color: var(--sub); font-size: 12px; margin-top: 2px; }
+.card .line { font-size: 13px; margin-top: 8px; }
+.dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+.dot.green { background: var(--green); }
+.dot.yellow { background: var(--yellow); }
+.dot.red { background: var(--red); }
+.dot.blue { background: var(--blue); }
+.dot.gray { background: var(--gray); }
+.bar {
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.bar > i {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  border-radius: 999px;
+}
+.progress-note { font-size: 12px; color: var(--sub); margin-top: 6px; }
+.status { font-size: 12px; font-weight: 600; }
+.status.blocked { color: var(--red); }
+.status.waiting_approval { color: #b58900; }
+.status.in_progress { color: var(--blue); }
+.status.done { color: var(--green); }
+.warn { color: var(--red); font-size: 13px; margin-top: 6px; }
+.approval { border-left: 4px solid var(--yellow); }
+.approval .rec { font-size: 13px; margin-top: 6px; }
+.report { font-size: 13px; }
+.report time { color: var(--sub); font-size: 12px; margin-right: 8px; }
+.empty { color: var(--sub); font-size: 13px; }
