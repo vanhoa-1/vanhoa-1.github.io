@@ -133,14 +133,18 @@
     var workSelect =
       "select=*,media:media_channels(name,slug),project:projects(name,slug)" +
       "&status=not.in.(done,cancelled)&order=due_at.asc.nullslast,created_at.desc&limit=50";
+    var doneSelect =
+      "select=*,media:media_channels(name,slug),project:projects(name,slug)" +
+      "&status=eq.done&order=done_at.desc.nullslast&limit=10";
     return Promise.all([
       rest("projects?select=*&order=sort_order.asc"),
       rest("media_channels?select=*&order=sort_order.asc"),
       rest("work_items?" + workSelect),
       rest("approvals?select=*,project:projects(name,slug)&status=eq.pending&order=created_at.desc"),
-      rest("reports?select=*&order=created_at.desc&limit=20")
+      rest("reports?select=*&order=created_at.desc&limit=20"),
+      rest("work_items?" + doneSelect)
     ]).then(function (r) {
-      return { projects: r[0], media_channels: r[1], work_items: r[2], approvals: r[3], reports: r[4] };
+      return { projects: r[0], media_channels: r[1], work_items: r[2], approvals: r[3], reports: r[4], done_items: r[5] };
     });
   }
 
@@ -215,10 +219,16 @@
         "</article>";
     }).join("") || '<p class="empty">案件の登録なし</p>';
 
-    // 作業
-    document.getElementById("works").innerHTML = data.work_items.map(function (w) {
+    // 作業（進行中＋完了済み。完了済みは末尾に置き、取り消しできる）
+    var workCard = function (w, isDone) {
       var where = [w.project && w.project.name, w.media && w.media.name].filter(Boolean).join(" / ");
       var when = w.due_at ? "期限 " + fmtTime(w.due_at) : (w.scheduled_at ? "予定 " + fmtTime(w.scheduled_at) : "");
+      var btn = "";
+      if (!useMock && getToken()) {
+        btn = isDone
+          ? '<button class="btn undo-btn" data-undo="' + esc(w.id) + '">完了を取り消す</button>'
+          : '<button class="btn done-btn" data-done="' + esc(w.id) + '">完了にする</button>';
+      }
       return '<article class="card"><div class="name">' + esc(w.title) + "</div>" +
         '<div class="sub">' + esc(where) + (when ? "｜" + esc(when) : "") + "</div>" +
         '<p class="line"><span class="status ' + esc(w.status) + '">' +
@@ -226,9 +236,12 @@
         progressHtml(w) +
         (w.status === "blocked" && w.blocked_reason ? '<p class="warn">理由：' + esc(w.blocked_reason) + "</p>" : "") +
         (w.owner_action ? '<p class="warn">あなたの番：' + esc(w.owner_action) + "</p>" : "") +
-        (!useMock && getToken() ? '<button class="btn done-btn" data-done="' + esc(w.id) + '">完了にする</button>' : "") +
+        btn +
         "</article>";
-    }).join("") || '<p class="empty">進行中の作業なし</p>';
+    };
+    var allCards = data.work_items.map(function (w) { return workCard(w, false); })
+      .concat((data.done_items || []).map(function (w) { return workCard(w, true); }));
+    document.getElementById("works").innerHTML = allCards.join("") || '<p class="empty">進行中の作業なし</p>';
 
     // 編集バー（編集キーの設定状態）とタスク追加フォーム
     var eb = document.getElementById("editbar");
@@ -268,8 +281,16 @@
       }
       Array.prototype.forEach.call(document.querySelectorAll("[data-done]"), function (b) {
         b.addEventListener("click", function () {
+          if (!window.confirm("この作業を完了にしますか？")) return;
           writeRest("PATCH", "work_items?id=eq." + encodeURIComponent(b.getAttribute("data-done")), {
             status: "done", done_at: new Date().toISOString()
+          }).then(reload).catch(writeFailed);
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll("[data-undo]"), function (b) {
+        b.addEventListener("click", function () {
+          writeRest("PATCH", "work_items?id=eq." + encodeURIComponent(b.getAttribute("data-undo")), {
+            status: "planned", done_at: null
           }).then(reload).catch(writeFailed);
         });
       });
