@@ -205,7 +205,8 @@
         ? '<p class="line">' + esc(head.title) + "</p>" + progressHtml(head)
         : '<p class="line empty">進行中の作業なし</p>';
       return '<article class="card"><div class="name">' + esc(m.name) + "</div>" +
-        '<div class="sub">' + esc(m.account_label) + "</div>" + body + "</article>";
+        '<div class="sub">' + esc(m.account_label) + "</div>" +
+        (m.schedule_label ? '<div class="sub">更新：' + esc(m.schedule_label) + "</div>" : "") + body + "</article>";
     }).join("") || '<p class="empty">媒体の登録なし</p>';
 
     // 案件
