@@ -143,9 +143,11 @@
       rest("approvals?select=*,project:projects(name,slug)&status=eq.pending&order=created_at.desc"),
       rest("reports?select=*&order=created_at.desc&limit=20"),
       rest("work_items?" + doneSelect),
-      rest("board_requests?select=*,project:projects(name,slug)&order=created_at.desc&limit=20")
+      rest("board_requests?select=*,project:projects(name,slug)&order=created_at.desc&limit=20"),
+      rest("measures?select=*,project:projects(name,slug),media:media_channels(name,slug)&order=created_at.desc&limit=20"),
+      rest("measure_results?select=*&order=measured_at.desc&limit=300")
     ]).then(function (r) {
-      return { projects: r[0], media_channels: r[1], work_items: r[2], approvals: r[3], reports: r[4], done_items: r[5], board_requests: r[6] };
+      return { projects: r[0], media_channels: r[1], work_items: r[2], approvals: r[3], reports: r[4], done_items: r[5], board_requests: r[6], measures: r[7], measure_results: r[8] };
     });
   }
 
@@ -207,7 +209,8 @@
         : '<p class="line empty">進行中の作業なし</p>';
       return '<article class="card"><div class="name">' + esc(m.name) + "</div>" +
         '<div class="sub">' + esc(m.account_label) + "</div>" +
-        (m.schedule_label ? '<div class="sub">更新：' + esc(m.schedule_label) + "</div>" : "") + body + "</article>";
+        (m.schedule_label ? '<div class="sub">更新：' + esc(m.schedule_label) + "</div>" : "") +
+        (m.fallback_label ? '<div class="sub">代替：' + esc(m.fallback_label) + "</div>" : "") + body + "</article>";
     }).join("") || '<p class="empty">媒体の登録なし</p>';
 
     // 案件
@@ -281,6 +284,33 @@
       } else {
         aw.innerHTML = "";
       }
+
+      // 一括指示フォーム（AI連携あて）
+      var dv = document.getElementById("directive");
+      if (getToken()) {
+        dv.innerHTML = '<form class="addform" id="directive-form">' +
+          '<input type="text" id="dv-title" placeholder="指示・相談の件名" autocomplete="off">' +
+          '<select id="dv-ai"><option value="muse">Muse へ</option><option value="gpt">GPTへ</option><option value="perplexity">Perplexityへ</option></select>' +
+          '<select id="dv-project"><option value="">案件なし</option>' +
+          data.projects.map(function (p) {
+            return '<option value="' + esc(p.id) + '">' + esc(p.name) + "</option>";
+          }).join("") +
+          '</select><button class="btn" type="submit">送る</button></form>' +
+          '<p class="sub">送った指示は Muse が定期確認で拾い、対応結果を報告履歴とチャットで返します。</p>';
+        document.getElementById("directive-form").addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          var title = document.getElementById("dv-title").value.trim();
+          if (!title) return;
+          writeRest("POST", "board_requests", {
+            title: title, detail: "", requester: "wataru",
+            assignee_ai: document.getElementById("dv-ai").value,
+            project_id: document.getElementById("dv-project").value || null,
+            status: "requested", deliverable_url: ""
+          }).then(reload).catch(writeFailed);
+        });
+      } else {
+        dv.innerHTML = "";
+      }
       Array.prototype.forEach.call(document.querySelectorAll("[data-done]"), function (b) {
         b.addEventListener("click", function () {
           if (!window.confirm("この作業を完了にしますか？")) return;
@@ -298,6 +328,37 @@
       });
     }
 
+    // 数字とPDCA（施策ごとに、指標の最新値と前回比）
+    function fmtNum(v) {
+      var n = Number(v);
+      return isFinite(n) ? n.toLocaleString("ja-JP") : String(v);
+    }
+    document.getElementById("numbers").innerHTML = (data.measures || []).map(function (ms) {
+      var where = [ms.project && ms.project.name, ms.media && ms.media.name].filter(Boolean).join(" / ");
+      var period = ms.started_on ? esc(ms.started_on) + (ms.ended_on ? "〜" + esc(ms.ended_on) : "〜") : "";
+      var byMetric = {};
+      (data.measure_results || []).forEach(function (r) {
+        if (r.measure_id !== ms.id) return;
+        (byMetric[r.metric_name] = byMetric[r.metric_name] || []).push(r);
+      });
+      var names = Object.keys(byMetric);
+      var lines = names.length ? names.map(function (name) {
+        var arr = byMetric[name];
+        var cur = arr[0];
+        var delta = "";
+        if (arr.length > 1) {
+          var d = Number(cur.metric_value) - Number(arr[1].metric_value);
+          delta = "（前回比 " + (d > 0 ? "+" : "") + fmtNum(d) + "）";
+        }
+        return '<p class="line">' + esc(name) + "：" + fmtNum(cur.metric_value) + esc(cur.unit || "") +
+          ' <span class="sub">' + esc(fmtTime(cur.measured_at)) + esc(delta) + "</span></p>";
+      }).join("") : '<p class="line empty">結果はまだ記録なし</p>';
+      return '<article class="card"><div class="name">' + esc(ms.title) + "</div>" +
+        '<div class="sub">' + esc(where) + (period ? "｜" + period : "") + "</div>" +
+        (ms.description ? '<p class="line">' + esc(ms.description) + "</p>" : "") +
+        lines + "</article>";
+    }).join("") || '<p class="empty">施策の登録なし</p>';
+
     // AI連携（依頼ボード）
     var BOARD_STATUS = { requested: "依頼中", in_progress: "制作中", done: "完了", cancelled: "中止" };
     var AI_LABEL = { gpt: "GPT", muse: "Muse", perplexity: "Perplexity" };
@@ -311,6 +372,29 @@
         (b.deliverable_url ? '<p class="line"><a href="' + esc(b.deliverable_url) + '" target="_blank" rel="noopener">依頼ボードを開く</a></p>' : "") +
         "</article>";
     }).join("") || '<p class="empty">依頼なし</p>';
+
+    // 担当AI（作業と依頼から自動集計）
+    var AGENTS = [
+      { key: "muse", label: "Muse", role: "開発・制作・運用" },
+      { key: "gpt", label: "GPT", role: "デザイン・画像・相談" },
+      { key: "perplexity", label: "Perplexity", role: "調査" }
+    ];
+    document.getElementById("agents").innerHTML = AGENTS.map(function (ag) {
+      var items = [];
+      data.work_items.forEach(function (w) {
+        if (w.assignee === ag.key) items.push(w.title + "（" + (STATUS_LABEL[w.status] || w.status) + "）");
+      });
+      (data.board_requests || []).forEach(function (b) {
+        if (b.assignee_ai === ag.key && b.status !== "done" && b.status !== "cancelled") {
+          items.push(b.title + "（" + (BOARD_STATUS[b.status] || b.status) + "）");
+        }
+      });
+      var body = items.length
+        ? items.slice(0, 4).map(function (t) { return '<p class="line">' + esc(t) + "</p>"; }).join("")
+        : '<p class="line empty">対応中の作業・依頼なし</p>';
+      return '<article class="card"><div class="name">' + esc(ag.label) + "</div>" +
+        '<div class="sub">' + esc(ag.role) + "｜対応中 " + items.length + "件</div>" + body + "</article>";
+    }).join("");
 
     // 報告履歴
     document.getElementById("reports").innerHTML = data.reports.map(function (r) {
