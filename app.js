@@ -91,6 +91,43 @@
     });
   }
 
+  // ---------------- 書き込み（合言葉トークン方式） ----------------
+  // 編集範囲は「完了チェック」と「タスク追加」だけ（2026年11月3日決定）。
+  // トークンはこの端末の localStorage にだけ置く。ページのソースには入れない。
+  function getToken() {
+    try { return localStorage.getItem("opsWriteToken") || ""; } catch (e) { return ""; }
+  }
+  function setToken(t) {
+    try {
+      if (t) localStorage.setItem("opsWriteToken", t);
+      else localStorage.removeItem("opsWriteToken");
+    } catch (e) { /* 保存できない環境では編集不可のまま */ }
+  }
+  function writeRest(method, path, payload) {
+    return fetch(cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + path, {
+      method: method,
+      headers: {
+        apikey: cfg.anonKey,
+        Authorization: "Bearer " + cfg.anonKey,
+        "x-ops-token": getToken(),
+        "Content-Type": "application/json",
+        Prefer: "return=representation"
+      },
+      body: payload ? JSON.stringify(payload) : undefined
+    }).then(function (res) {
+      if (!res.ok) throw new Error("WRITE " + res.status);
+      return res.json().catch(function () { return null; });
+    });
+  }
+  function reload() {
+    load().then(render).catch(function (e) {
+      document.getElementById("meta").textContent = "読み取りに失敗しました：" + e.message;
+    });
+  }
+  function writeFailed(e) {
+    alert("保存できませんでした。編集キーが違うか、通信に失敗しました。（" + e.message + "）");
+  }
+
   function load() {
     if (useMock) return Promise.resolve(MOCK);
     var workSelect =
@@ -189,8 +226,54 @@
         progressHtml(w) +
         (w.status === "blocked" && w.blocked_reason ? '<p class="warn">理由：' + esc(w.blocked_reason) + "</p>" : "") +
         (w.owner_action ? '<p class="warn">あなたの番：' + esc(w.owner_action) + "</p>" : "") +
+        (!useMock && getToken() ? '<button class="btn done-btn" data-done="' + esc(w.id) + '">完了にする</button>' : "") +
         "</article>";
     }).join("") || '<p class="empty">進行中の作業なし</p>';
+
+    // 編集バー（編集キーの設定状態）とタスク追加フォーム
+    var eb = document.getElementById("editbar");
+    if (!useMock) {
+      eb.innerHTML = getToken()
+        ? '編集モード <button class="btn" id="token-clear">編集をオフにする</button>'
+        : '<button class="btn" id="token-set">編集キーを設定する</button>';
+      var ts = document.getElementById("token-set");
+      if (ts) ts.addEventListener("click", function () {
+        var t = prompt("編集キーを入力してください（この端末にだけ保存されます）");
+        if (t) { setToken(t.trim()); reload(); }
+      });
+      var tc = document.getElementById("token-clear");
+      if (tc) tc.addEventListener("click", function () { setToken(""); reload(); });
+
+      var aw = document.getElementById("addwork");
+      if (getToken()) {
+        aw.innerHTML = '<form class="addform" id="addform">' +
+          '<input type="text" id="new-title" placeholder="タスクを追加" autocomplete="off">' +
+          '<select id="new-project"><option value="">案件なし</option>' +
+          data.projects.map(function (p) {
+            return '<option value="' + esc(p.id) + '">' + esc(p.name) + "</option>";
+          }).join("") +
+          '</select><button class="btn" type="submit">追加</button></form>';
+        document.getElementById("addform").addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          var title = document.getElementById("new-title").value.trim();
+          if (!title) return;
+          var pid = document.getElementById("new-project").value || null;
+          writeRest("POST", "work_items", {
+            title: title, kind: "task", assignee: "wataru", status: "planned",
+            project_id: pid, steps: [], steps_total: 0, steps_done: 0, note: ""
+          }).then(reload).catch(writeFailed);
+        });
+      } else {
+        aw.innerHTML = "";
+      }
+      Array.prototype.forEach.call(document.querySelectorAll("[data-done]"), function (b) {
+        b.addEventListener("click", function () {
+          writeRest("PATCH", "work_items?id=eq." + encodeURIComponent(b.getAttribute("data-done")), {
+            status: "done", done_at: new Date().toISOString()
+          }).then(reload).catch(writeFailed);
+        });
+      });
+    }
 
     // 報告履歴
     document.getElementById("reports").innerHTML = data.reports.map(function (r) {
